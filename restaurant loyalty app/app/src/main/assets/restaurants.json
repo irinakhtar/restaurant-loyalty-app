@@ -1,0 +1,58 @@
+{
+  "restaurants": [
+    {
+      "id": "corner-cup",
+      "name": "Corner Cup",
+      "cuisine": "Café",
+      "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+      "address": "14 Market Lane, London",
+      "openingHours": "Mon-Fri 07:00-18:00, Sat-Sun 08:00-17:00",
+      "rewardText": "Free coffee"
+    },
+    {
+      "id": "north-end-slice",
+      "name": "North End Slice",
+      "cuisine": "Pizza",
+      "imageUrl": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+      "address": "8 Baker Street, London",
+      "openingHours": "Tue-Sun 12:00-22:00, Mon closed",
+      "rewardText": "Free garlic bread"
+    },
+    {
+      "id": "lantern-bowl",
+      "name": "Lantern Bowl",
+      "cuisine": "Asian",
+      "imageUrl": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=800&q=80",
+      "address": "22 Kingly Court, London",
+      "openingHours": "Mon-Sun 11:30-21:30",
+      "rewardText": "Free spring rolls"
+    },
+    {
+      "id": "the-daily-bun",
+      "name": "The Daily Bun",
+      "cuisine": "Bakery",
+      "imageUrl": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+      "address": "3 Chapel Road, London",
+      "openingHours": "Mon-Sat 07:30-16:00, Sun 08:00-14:00",
+      "rewardText": "Free pastry"
+    },
+    {
+      "id": "harbour-grill",
+      "name": "Harbour Grill",
+      "cuisine": "Burgers",
+      "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80",
+      "address": "41 River Walk, London",
+      "openingHours": "Mon-Thu 12:00-21:00, Fri-Sat 12:00-23:00, Sun 12:00-20:00",
+      "rewardText": "Free fries"
+    },
+    {
+      "id": "olive-and-rye",
+      "name": "Olive & Rye",
+      "cuisine": "Mediterranean",
+      "imageUrl": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=80",
+      "address": "17 Garden Mews, London",
+      "openingHours": "Wed-Sun 12:00-22:00, Mon-Tue closed",
+      "rewardText": "Free olives"
+    }
+  ]
+}
