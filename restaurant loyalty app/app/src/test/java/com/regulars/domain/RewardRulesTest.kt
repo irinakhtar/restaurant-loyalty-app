@@ -24,12 +24,13 @@ class RewardRulesTest {
     @Test
     fun claimingRecordsTheClaimAndResetsTheCardToZero() {
         val claimedAt = noon.plus(Duration.ofDays(2))
-        val result = RewardRules.claimReward(
-            visits = stamps(8),
-            restaurantId = restaurantId,
-            at = claimedAt,
-            visitId = "claim-1",
-        )
+        val result =
+            RewardRules.claimReward(
+                visits = stamps(8),
+                restaurantId = restaurantId,
+                at = claimedAt,
+                visitId = "claim-1",
+            )
 
         val claimed = assertIs<ClaimRewardResult.Claimed>(result)
         val claim = claimed.visits.last()
@@ -45,12 +46,13 @@ class RewardRulesTest {
     @Test
     fun claimingBeforeEightStampsLeavesTheCardUnchanged() {
         val visits = stamps(7)
-        val result = RewardRules.claimReward(
-            visits = visits,
-            restaurantId = restaurantId,
-            at = noon.plus(Duration.ofDays(2)),
-            visitId = "claim-1",
-        )
+        val result =
+            RewardRules.claimReward(
+                visits = visits,
+                restaurantId = restaurantId,
+                at = noon.plus(Duration.ofDays(2)),
+                visitId = "claim-1",
+            )
 
         assertIs<ClaimRewardResult.NotReady>(result)
         assertEquals(7, RewardRules.stampCount(visits, restaurantId))
@@ -59,12 +61,13 @@ class RewardRulesTest {
     @Test
     fun claimingOneRestaurantDoesNotResetAnotherCard() {
         val visits = stamps(8)
-        val result = RewardRules.claimReward(
-            visits = visits,
-            restaurantId = otherRestaurantId,
-            at = noon.plus(Duration.ofDays(2)),
-            visitId = "claim-other",
-        )
+        val result =
+            RewardRules.claimReward(
+                visits = visits,
+                restaurantId = otherRestaurantId,
+                at = noon.plus(Duration.ofDays(2)),
+                visitId = "claim-other",
+            )
 
         assertIs<ClaimRewardResult.NotReady>(result)
         assertEquals(8, RewardRules.stampCount(visits, restaurantId))
@@ -72,15 +75,17 @@ class RewardRulesTest {
 
     @Test
     fun onlyOneStampPerRestaurantPerHour() {
-        val first = assertIs<AddStampResult.Added>(
-            RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
-        )
-        val tooSoon = RewardRules.addStamp(
-            visits = first.visits,
-            restaurantId = restaurantId,
-            at = noon.plus(Duration.ofMinutes(59)),
-            visitId = "stamp-2",
-        )
+        val first =
+            assertIs<AddStampResult.Added>(
+                RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
+            )
+        val tooSoon =
+            RewardRules.addStamp(
+                visits = first.visits,
+                restaurantId = restaurantId,
+                at = noon.plus(Duration.ofMinutes(59)),
+                visitId = "stamp-2",
+            )
 
         val cooldown = assertIs<AddStampResult.OnCooldown>(tooSoon)
         assertEquals(noon.plus(RewardRules.STAMP_COOLDOWN), cooldown.nextStampAt)
@@ -89,15 +94,17 @@ class RewardRulesTest {
 
     @Test
     fun aStampIsAllowedOnceTheHourHasPassed() {
-        val first = assertIs<AddStampResult.Added>(
-            RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
-        )
-        val second = RewardRules.addStamp(
-            visits = first.visits,
-            restaurantId = restaurantId,
-            at = noon.plus(Duration.ofHours(1)),
-            visitId = "stamp-2",
-        )
+        val first =
+            assertIs<AddStampResult.Added>(
+                RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
+            )
+        val second =
+            RewardRules.addStamp(
+                visits = first.visits,
+                restaurantId = restaurantId,
+                at = noon.plus(Duration.ofHours(1)),
+                visitId = "stamp-2",
+            )
 
         val added = assertIs<AddStampResult.Added>(second)
         assertEquals(2, RewardRules.stampCount(added.visits, restaurantId))
@@ -105,15 +112,17 @@ class RewardRulesTest {
 
     @Test
     fun anotherRestaurantCanBeStampedDuringTheCooldown() {
-        val first = assertIs<AddStampResult.Added>(
-            RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
-        )
-        val other = RewardRules.addStamp(
-            visits = first.visits,
-            restaurantId = otherRestaurantId,
-            at = noon.plus(Duration.ofMinutes(1)),
-            visitId = "stamp-other",
-        )
+        val first =
+            assertIs<AddStampResult.Added>(
+                RewardRules.addStamp(emptyList(), restaurantId, noon, "stamp-1"),
+            )
+        val other =
+            RewardRules.addStamp(
+                visits = first.visits,
+                restaurantId = otherRestaurantId,
+                at = noon.plus(Duration.ofMinutes(1)),
+                visitId = "stamp-other",
+            )
 
         val added = assertIs<AddStampResult.Added>(other)
         assertEquals(1, RewardRules.stampCount(added.visits, restaurantId))
@@ -123,22 +132,24 @@ class RewardRulesTest {
     @Test
     fun stampsBeforeAClaimDoNotCountTowardTheNextCard() {
         val claimedAt = noon.plus(Duration.ofDays(2))
-        val claimed = assertIs<ClaimRewardResult.Claimed>(
-            RewardRules.claimReward(
-                visits = stamps(8),
-                restaurantId = restaurantId,
-                at = claimedAt,
-                visitId = "claim-1",
-            ),
-        )
-        val next = assertIs<AddStampResult.Added>(
-            RewardRules.addStamp(
-                visits = claimed.visits,
-                restaurantId = restaurantId,
-                at = claimedAt.plus(Duration.ofHours(1)),
-                visitId = "stamp-next",
-            ),
-        )
+        val claimed =
+            assertIs<ClaimRewardResult.Claimed>(
+                RewardRules.claimReward(
+                    visits = stamps(8),
+                    restaurantId = restaurantId,
+                    at = claimedAt,
+                    visitId = "claim-1",
+                ),
+            )
+        val next =
+            assertIs<AddStampResult.Added>(
+                RewardRules.addStamp(
+                    visits = claimed.visits,
+                    restaurantId = restaurantId,
+                    at = claimedAt.plus(Duration.ofHours(1)),
+                    visitId = "stamp-next",
+                ),
+            )
 
         assertEquals(1, RewardRules.stampCount(next.visits, restaurantId))
         assertFalse(RewardRules.isRewardUnlocked(next.visits, restaurantId))
@@ -148,20 +159,22 @@ class RewardRulesTest {
     fun claimingDoesNotBypassTheHourlyStampCooldown() {
         val lastStampAt = noon.plus(Duration.ofHours(7))
         val claimedAt = lastStampAt.plus(Duration.ofMinutes(10))
-        val claimed = assertIs<ClaimRewardResult.Claimed>(
-            RewardRules.claimReward(
-                visits = stamps(8),
+        val claimed =
+            assertIs<ClaimRewardResult.Claimed>(
+                RewardRules.claimReward(
+                    visits = stamps(8),
+                    restaurantId = restaurantId,
+                    at = claimedAt,
+                    visitId = "claim-1",
+                ),
+            )
+        val tooSoon =
+            RewardRules.addStamp(
+                visits = claimed.visits,
                 restaurantId = restaurantId,
-                at = claimedAt,
-                visitId = "claim-1",
-            ),
-        )
-        val tooSoon = RewardRules.addStamp(
-            visits = claimed.visits,
-            restaurantId = restaurantId,
-            at = claimedAt.plus(Duration.ofMinutes(1)),
-            visitId = "stamp-next",
-        )
+                at = claimedAt.plus(Duration.ofMinutes(1)),
+                visitId = "stamp-next",
+            )
 
         assertIs<AddStampResult.OnCooldown>(tooSoon)
         assertEquals(0, RewardRules.stampCount(claimed.visits, restaurantId))
@@ -170,19 +183,20 @@ class RewardRulesTest {
     @Test
     fun aFullCardDoesNotTakeAnotherStamp() {
         val visits = stamps(8)
-        val result = RewardRules.addStamp(
-            visits = visits,
-            restaurantId = restaurantId,
-            at = noon.plus(Duration.ofDays(2)),
-            visitId = "stamp-extra",
-        )
+        val result =
+            RewardRules.addStamp(
+                visits = visits,
+                restaurantId = restaurantId,
+                at = noon.plus(Duration.ofDays(2)),
+                visitId = "stamp-extra",
+            )
 
         assertIs<AddStampResult.CardFull>(result)
         assertEquals(8, RewardRules.stampCount(visits, restaurantId))
     }
 
-    private fun stamps(count: Int): List<Visit> {
-        return List(count) { index ->
+    private fun stamps(count: Int): List<Visit> =
+        List(count) { index ->
             Visit(
                 id = "stamp-$index",
                 restaurantId = restaurantId,
@@ -190,5 +204,4 @@ class RewardRulesTest {
                 kind = VisitKind.STAMP,
             )
         }
-    }
 }

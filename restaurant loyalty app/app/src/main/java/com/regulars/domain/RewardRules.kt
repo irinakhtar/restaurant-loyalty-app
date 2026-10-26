@@ -7,7 +7,10 @@ object RewardRules {
     const val STAMPS_REQUIRED: Int = 8
     val STAMP_COOLDOWN: Duration = Duration.ofHours(1)
 
-    fun stampCount(visits: List<Visit>, restaurantId: String): Int {
+    fun stampCount(
+        visits: List<Visit>,
+        restaurantId: String,
+    ): Int {
         val lastClaimAt = lastClaimAt(visits, restaurantId)
         return visits.count { visit ->
             visit.restaurantId == restaurantId &&
@@ -16,9 +19,10 @@ object RewardRules {
         }
     }
 
-    fun isRewardUnlocked(visits: List<Visit>, restaurantId: String): Boolean {
-        return stampCount(visits, restaurantId) >= STAMPS_REQUIRED
-    }
+    fun isRewardUnlocked(
+        visits: List<Visit>,
+        restaurantId: String,
+    ): Boolean = stampCount(visits, restaurantId) >= STAMPS_REQUIRED
 
     fun addStamp(
         visits: List<Visit>,
@@ -29,10 +33,11 @@ object RewardRules {
         if (isRewardUnlocked(visits, restaurantId)) {
             return AddStampResult.CardFull
         }
-        val lastStampAt = visits
-            .asSequence()
-            .filter { it.restaurantId == restaurantId && it.kind == VisitKind.STAMP }
-            .maxOfOrNull { it.visitedAt }
+        val lastStampAt =
+            visits
+                .asSequence()
+                .filter { it.restaurantId == restaurantId && it.kind == VisitKind.STAMP }
+                .maxOfOrNull { it.visitedAt }
         if (lastStampAt != null) {
             val nextStampAt = lastStampAt.plus(STAMP_COOLDOWN)
             if (at.isBefore(nextStampAt)) {
@@ -40,12 +45,13 @@ object RewardRules {
             }
         }
         return AddStampResult.Added(
-            visits + Visit(
-                id = visitId,
-                restaurantId = restaurantId,
-                visitedAt = at,
-                kind = VisitKind.STAMP,
-            ),
+            visits +
+                Visit(
+                    id = visitId,
+                    restaurantId = restaurantId,
+                    visitedAt = at,
+                    kind = VisitKind.STAMP,
+                ),
         )
     }
 
@@ -59,33 +65,42 @@ object RewardRules {
             return ClaimRewardResult.NotReady
         }
         return ClaimRewardResult.Claimed(
-            visits + Visit(
-                id = visitId,
-                restaurantId = restaurantId,
-                visitedAt = at,
-                kind = VisitKind.REWARD_CLAIM,
-            ),
+            visits +
+                Visit(
+                    id = visitId,
+                    restaurantId = restaurantId,
+                    visitedAt = at,
+                    kind = VisitKind.REWARD_CLAIM,
+                ),
         )
     }
 
-    private fun lastClaimAt(visits: List<Visit>, restaurantId: String): Instant? {
-        return visits
+    private fun lastClaimAt(
+        visits: List<Visit>,
+        restaurantId: String,
+    ): Instant? =
+        visits
             .asSequence()
             .filter { it.restaurantId == restaurantId && it.kind == VisitKind.REWARD_CLAIM }
             .maxOfOrNull { it.visitedAt }
-    }
 }
 
 sealed interface AddStampResult {
-    data class Added(val visits: List<Visit>) : AddStampResult
+    data class Added(
+        val visits: List<Visit>,
+    ) : AddStampResult
 
-    data class OnCooldown(val nextStampAt: Instant) : AddStampResult
+    data class OnCooldown(
+        val nextStampAt: Instant,
+    ) : AddStampResult
 
     data object CardFull : AddStampResult
 }
 
 sealed interface ClaimRewardResult {
-    data class Claimed(val visits: List<Visit>) : ClaimRewardResult
+    data class Claimed(
+        val visits: List<Visit>,
+    ) : ClaimRewardResult
 
     data object NotReady : ClaimRewardResult
 }

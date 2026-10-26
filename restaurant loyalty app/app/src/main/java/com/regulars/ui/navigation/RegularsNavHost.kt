@@ -31,15 +31,17 @@ fun RegularsNavHost(
         }
         composable(
             route = RegularsDestination.RestaurantDetail.route,
-            arguments = listOf(
-                navArgument(RegularsDestination.RestaurantDetail.RESTAURANT_ID) {
-                    type = NavType.StringType
-                },
-            ),
+            arguments =
+                listOf(
+                    navArgument(RegularsDestination.RestaurantDetail.RESTAURANT_ID) {
+                        type = NavType.StringType
+                    },
+                ),
         ) { entry ->
-            val restaurantId = entry.arguments
-                ?.getString(RegularsDestination.RestaurantDetail.RESTAURANT_ID)
-                .orEmpty()
+            val restaurantId =
+                entry.arguments
+                    ?.getString(RegularsDestination.RestaurantDetail.RESTAURANT_ID)
+                    .orEmpty()
             PlaceholderScreen(title = "Restaurant $restaurantId".trim())
         }
         composable(RegularsDestination.Settings.route) {
